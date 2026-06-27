@@ -2,13 +2,9 @@ import json
 from pathlib import Path
 
 
-def test_report_exists():
-    """The agent produced a report file."""
+def test_report_exists_and_valid_json():
+    """Criterion 1: /app/report.json exists and is valid JSON."""
     assert Path("/app/report.json").exists(), "no report.json found"
-
-
-def test_report_valid_json():
-    """The report file is valid JSON."""
     text = Path("/app/report.json").read_text()
     assert len(text) > 0, "report.json is empty"
     data = json.loads(text)
@@ -16,18 +12,18 @@ def test_report_valid_json():
 
 
 def test_total_requests():
-    """total_requests equals the number of log lines."""
+    """Criterion 2: total_requests is the total number of log lines (6)."""
     data = json.loads(Path("/app/report.json").read_text())
     assert data["total_requests"] == 6, f"expected 6, got {data['total_requests']}"
 
 
 def test_unique_ips():
-    """unique_ips equals the number of distinct client IPs."""
+    """Criterion 3: unique_ips is the count of distinct client IPs (3)."""
     data = json.loads(Path("/app/report.json").read_text())
     assert data["unique_ips"] == 3, f"expected 3, got {data['unique_ips']}"
 
 
 def test_top_path():
-    """top_path is the most frequently requested path."""
+    """Criterion 4: top_path is the most frequently requested path (/index.html)."""
     data = json.loads(Path("/app/report.json").read_text())
     assert data["top_path"] == "/index.html", f"expected /index.html, got {data['top_path']}"
